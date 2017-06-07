@@ -13,6 +13,80 @@ import java.util.Date;
  */
 public final class CalendarDay implements Parcelable {
 
+    public static final Creator<CalendarDay> CREATOR = new Creator<CalendarDay>() {
+        public CalendarDay createFromParcel(Parcel in) {
+            return new CalendarDay(in);
+        }
+
+        public CalendarDay[] newArray(int size) {
+            return new CalendarDay[size];
+        }
+    };
+    private final int year;
+    private final int month;
+    private final int day;
+
+    private String extra;
+
+    private String color;
+    /**
+     * Cache for calls to {@linkplain #getCalendar()}
+     */
+    private transient Calendar _calendar;
+    /**
+     * Cache for calls to {@linkplain #getDate()}
+     */
+    private transient Date _date;
+
+    /**
+     * Initialized to the current day
+     *
+     * @see CalendarDay#today()
+     */
+    @Deprecated
+    public CalendarDay() {
+        this(CalendarUtils.getInstance());
+    }
+
+    /**
+     * @param calendar source to pull date information from for this instance
+     * @see CalendarDay#from(Calendar)
+     */
+    @Deprecated
+    public CalendarDay(Calendar calendar) {
+        this(
+                CalendarUtils.getYear(calendar),
+                CalendarUtils.getMonth(calendar),
+                CalendarUtils.getDay(calendar)
+        );
+    }
+
+    /**
+     * @param year  new instance's year
+     * @param month new instance's month as defined by {@linkplain java.util.Calendar}
+     * @param day   new instance's day of month
+     * @see CalendarDay#from(Calendar)
+     */
+    @Deprecated
+    public CalendarDay(int year, int month, int day) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+    }
+
+    /**
+     * @param date source to pull date information from for this instance
+     * @see CalendarDay#from(Date)
+     */
+    @Deprecated
+    public CalendarDay(Date date) {
+        this(CalendarUtils.getInstance(date));
+    }
+
+    public CalendarDay(Parcel in) {
+        this(in.readInt(), in.readInt(), in.readInt());
+    }
+
     /**
      * Get a new instance set to today
      *
@@ -66,63 +140,9 @@ public final class CalendarDay implements Parcelable {
         return from(CalendarUtils.getInstance(date));
     }
 
-    private final int year;
-    private final int month;
-    private final int day;
-
-    /**
-     * Cache for calls to {@linkplain #getCalendar()}
-     */
-    private transient Calendar _calendar;
-
-    /**
-     * Cache for calls to {@linkplain #getDate()}
-     */
-    private transient Date _date;
-
-    /**
-     * Initialized to the current day
-     *
-     * @see CalendarDay#today()
-     */
-    @Deprecated
-    public CalendarDay() {
-        this(CalendarUtils.getInstance());
-    }
-
-    /**
-     * @param calendar source to pull date information from for this instance
-     * @see CalendarDay#from(Calendar)
-     */
-    @Deprecated
-    public CalendarDay(Calendar calendar) {
-        this(
-                CalendarUtils.getYear(calendar),
-                CalendarUtils.getMonth(calendar),
-                CalendarUtils.getDay(calendar)
-        );
-    }
-
-    /**
-     * @param year  new instance's year
-     * @param month new instance's month as defined by {@linkplain java.util.Calendar}
-     * @param day   new instance's day of month
-     * @see CalendarDay#from(Calendar)
-     */
-    @Deprecated
-    public CalendarDay(int year, int month, int day) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-    }
-
-    /**
-     * @param date source to pull date information from for this instance
-     * @see CalendarDay#from(Date)
-     */
-    @Deprecated
-    public CalendarDay(Date date) {
-        this(CalendarUtils.getInstance(date));
+    private static int hashCode(int year, int month, int day) {
+        //Should produce hashes like "20150401"
+        return (year * 10000) + (month * 100) + day;
     }
 
     /**
@@ -255,27 +275,22 @@ public final class CalendarDay implements Parcelable {
         return day == that.day && month == that.month && year == that.year;
     }
 
-    @Override
-    public int hashCode() {
-        return hashCode(year, month, day);
-    }
-
-    private static int hashCode(int year, int month, int day) {
-        //Should produce hashes like "20150401"
-        return (year * 10000) + (month * 100) + day;
-    }
-
-    @Override
-    public String toString() {
-        return "CalendarDay{" + year + "-" + month + "-" + day + "}";
+    public boolean isSameDate(CalendarDay calendarDay) {
+        return calendarDay != null && day == calendarDay.day && (month + 1) == (calendarDay.month) && year == calendarDay.year;
     }
 
     /*
      * Parcelable Stuff
      */
 
-    public CalendarDay(Parcel in) {
-        this(in.readInt(), in.readInt(), in.readInt());
+    @Override
+    public int hashCode() {
+        return hashCode(year, month, day);
+    }
+
+    @Override
+    public String toString() {
+        return year + "-" + (month + 1) + "-" + day;
     }
 
     @Override
@@ -290,13 +305,19 @@ public final class CalendarDay implements Parcelable {
         dest.writeInt(day);
     }
 
-    public static final Creator<CalendarDay> CREATOR = new Creator<CalendarDay>() {
-        public CalendarDay createFromParcel(Parcel in) {
-            return new CalendarDay(in);
-        }
+    public String getExtra() {
+        return extra;
+    }
 
-        public CalendarDay[] newArray(int size) {
-            return new CalendarDay[size];
-        }
-    };
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

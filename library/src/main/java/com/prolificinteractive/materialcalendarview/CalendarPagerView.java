@@ -19,7 +19,6 @@ import java.util.List;
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SHOW_DEFAULTS;
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.showOtherMonths;
 import static java.util.Calendar.DATE;
-import static java.util.Calendar.DAY_OF_WEEK;
 
 abstract class CalendarPagerView extends ViewGroup implements View.OnClickListener {
 
@@ -29,6 +28,7 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
     private static final Calendar tempWorkingCalendar = CalendarUtils.getInstance();
     private final ArrayList<WeekDayView> weekDayViews = new ArrayList<>();
     private final ArrayList<DecoratorResult> decoratorResults = new ArrayList<>();
+    private final Collection<DayView> dayViews = new ArrayList<>();
     @ShowOtherDates
     protected int showOtherDates = SHOW_DEFAULTS;
     private MaterialCalendarView mcv;
@@ -36,8 +36,6 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
     private CalendarDay minDate = null;
     private CalendarDay maxDate = null;
     private int firstDayOfWeek;
-
-    private final Collection<DayView> dayViews = new ArrayList<>();
 
     public CalendarPagerView(@NonNull MaterialCalendarView view,
                              CalendarDay firstViewDay,
@@ -68,7 +66,8 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
         DayView dayView = new DayView(getContext(), day);
         dayView.setOnClickListener(this);
         dayViews.add(dayView);
-        addView(dayView, new LayoutParams());
+        MarginLayoutParams mlp = new LayoutParams();
+        addView(dayView);
 
         calendar.add(DATE, 1);
     }
@@ -112,7 +111,7 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
 
     public void setDateTextAppearance(int taId) {
         for (DayView dayView : dayViews) {
-            dayView.setTextAppearance(getContext(), taId);
+            dayView.getTextDay().setTextAppearance(getContext(), taId);
         }
     }
 
@@ -249,6 +248,7 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
 
     /**
      * Return the number of rows to display per page
+     *
      * @return
      */
     protected abstract int getRows();
@@ -305,11 +305,11 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
         return p instanceof LayoutParams;
     }
 
+
     @Override
     protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new LayoutParams();
     }
-
 
     @Override
     public void onInitializeAccessibilityEvent(@NonNull AccessibilityEvent event) {
@@ -327,15 +327,26 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
         return firstViewDay;
     }
 
+    public void setDaysExtra(List<CalendarDay> customDays) {
+        for (DayView dayView : dayViews) {
+            for (CalendarDay day : customDays) {
+                if (dayView.getDate().isSameDate(day)) {
+                    dayView.getTextDayExtra().setText(day.getExtra());
+                    dayView.getTextDayExtra().setVisibility(VISIBLE);
+                }
+            }
+        }
+    }
+
     /**
      * Simple layout params class for MonthView, since every child is the same size
      */
-    protected static class LayoutParams extends MarginLayoutParams {
+    private static class LayoutParams extends MarginLayoutParams {
 
         /**
          * {@inheritDoc}
          */
-        public LayoutParams() {
+        LayoutParams() {
             super(WRAP_CONTENT, WRAP_CONTENT);
         }
     }

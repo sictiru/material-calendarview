@@ -2,8 +2,10 @@ package com.prolificinteractive.materialcalendarview;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Experimental
@@ -58,11 +60,32 @@ public class WeekPagerAdapter extends CalendarPagerAdapter<WeekView> {
         @Override
         public CalendarDay getItem(int position) {
             long minMillis = min.getDate().getTime();
-            long millisOffset = TimeUnit.MILLISECONDS.convert(
-                    position * DAYS_IN_WEEK,
-                    TimeUnit.DAYS);
+            long millisOffset = TimeUnit.MILLISECONDS.convert(position * DAYS_IN_WEEK, TimeUnit.DAYS);
             long positionMillis = minMillis + millisOffset;
             return CalendarDay.from(new Date(positionMillis));
+        }
+
+        @Override
+        public List<CalendarDay> getVisibleWeekDays(int position) {
+            List<CalendarDay> list = new ArrayList<>();
+            long minMillis = min.getDate().getTime();
+            long millisOffset = TimeUnit.MILLISECONDS.convert(position * DAYS_IN_WEEK, TimeUnit.DAYS);
+            long currentMillis = minMillis + millisOffset;
+
+            for (int i = 0; i < DAYS_IN_WEEK; i++) {
+                long nextDayOffset = TimeUnit.MILLISECONDS.convert(i, TimeUnit.DAYS);
+                list.add(CalendarDay.from(new Date(nextDayOffset + currentMillis)));
+            }
+            return list;
+        }
+
+        @Override
+        public CalendarDay getWeekMaxDate(int position) {
+            long minMillis = min.getDate().getTime();
+            long millisOffset = TimeUnit.MILLISECONDS.convert(position * DAYS_IN_WEEK, TimeUnit.DAYS);
+            long currentMillis = minMillis + millisOffset;
+            long nextDayOffset = TimeUnit.MILLISECONDS.convert(6, TimeUnit.DAYS);
+            return CalendarDay.from(new Date(nextDayOffset + currentMillis));
         }
 
         private int weekNumberDifference(@NonNull CalendarDay min, @NonNull CalendarDay max) {
