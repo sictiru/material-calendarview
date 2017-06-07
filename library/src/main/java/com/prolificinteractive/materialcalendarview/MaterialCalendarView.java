@@ -1413,12 +1413,12 @@ public class MaterialCalendarView extends ViewGroup {
         }
     }
 
-    public CalendarDay getInitStartDate() {
-        return adapter.getInitStartDate();
+    public String getInitStartDate() {
+        return adapter.getInitStartDate().toString();
     }
 
-    public CalendarDay getInitEndDate() {
-        return weekMaxDate;
+    public String getInitEndDate() {
+        return weekMaxDate.toString();
     }
 
     /**

@@ -275,10 +275,6 @@ public final class CalendarDay implements Parcelable {
         return day == that.day && month == that.month && year == that.year;
     }
 
-    public boolean isSameDate(CalendarDay calendarDay) {
-        return calendarDay != null && day == calendarDay.day && (month + 1) == (calendarDay.month) && year == calendarDay.year;
-    }
-
     /*
      * Parcelable Stuff
      */
