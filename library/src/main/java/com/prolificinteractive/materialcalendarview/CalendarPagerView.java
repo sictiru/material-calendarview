@@ -330,7 +330,7 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
     public void setDaysExtra(List<CalendarDay> customDays) {
         for (DayView dayView : dayViews) {
             for (CalendarDay day : customDays) {
-                if (dayView.getDate().equals(day)) {
+                if (dayView.getDate().equals(day) && (dayView.getDate().equals(minDate) || dayView.getDate().isAfter(minDate))) {
                     dayView.getTextDayExtra().setText(day.getExtra());
                     dayView.getTextDayExtra().setVisibility(VISIBLE);
                 }

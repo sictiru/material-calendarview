@@ -793,13 +793,6 @@ public class MaterialCalendarView extends ViewGroup {
     /**
      * @param date a Date to set as selected. Null to clear selection
      */
-    public void setSelectedDate(@Nullable Date date) {
-        setSelectedDate(CalendarDay.from(date));
-    }
-
-    /**
-     * @param date a Date to set as selected. Null to clear selection
-     */
     public void setSelectedDate(@Nullable CalendarDay date) {
         clearSelection();
         if (date != null) {
@@ -812,6 +805,13 @@ public class MaterialCalendarView extends ViewGroup {
      */
     public void setSelectedDate(@Nullable Calendar calendar) {
         setSelectedDate(CalendarDay.from(calendar));
+    }
+
+    /**
+     * @param date a Date to set as selected. Null to clear selection
+     */
+    public void setSelectedDate(@Nullable Date date) {
+        setSelectedDate(CalendarDay.from(date));
     }
 
     /**
@@ -1342,10 +1342,7 @@ public class MaterialCalendarView extends ViewGroup {
     protected void dispatchOnWeekChanged(int position) {
         OnWeekChangedListener listener = weekListener;
         if (listener != null) {
-            List<CalendarDay> weekDays = adapter.getVisibleWeekDays(position);
-            if (weekDays != null) {
-                listener.onWeekChanged(MaterialCalendarView.this, weekDays);
-            }
+            listener.onWeekChanged(MaterialCalendarView.this, adapter.getVisibleWeekDays(position));
         }
     }
 

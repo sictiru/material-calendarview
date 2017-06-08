@@ -12,6 +12,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import com.prolificinteractive.materialcalendarview.OnWeekChangedListener;
+import com.prolificinteractive.materialcalendarview.WeekDayRange;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -60,21 +61,6 @@ public class BasicActivity extends AppCompatActivity implements OnDateSelectedLi
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        CalendarDay calendarDay = new CalendarDay(2017, 6, 6);
-        calendarDay.setExtra("$$$");
-        CalendarDay calendarDay2 = new CalendarDay(2017, 6, 7);
-        calendarDay2.setExtra("$$");
-        List<CalendarDay> list = new ArrayList<>();
-        list.add(calendarDay);
-        list.add(calendarDay2);
-        widget.setDaysExtra(list);
-
-
-    }
-
-    @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @Nullable CalendarDay date, boolean selected) {
         textView.setText(getSelectedDatesString());
     }
@@ -85,16 +71,16 @@ public class BasicActivity extends AppCompatActivity implements OnDateSelectedLi
         getSupportActionBar().setTitle(FORMATTER.format(date.getDate()));
     }
 
-    @Override
-    public void onWeekChanged(MaterialCalendarView view, List<CalendarDay> weekDays) {
-        Toast.makeText(this, weekDays + "", Toast.LENGTH_SHORT).show();
-    }
-
     private String getSelectedDatesString() {
         CalendarDay date = widget.getSelectedDate();
         if (date == null) {
             return "No Selection";
         }
         return FORMATTER.format(date.getDate());
+    }
+
+    @Override
+    public void onWeekChanged(MaterialCalendarView view, WeekDayRange weekDayRange) {
+        Toast.makeText(this, weekDayRange.startDate + " - " + weekDayRange.endDate, Toast.LENGTH_SHORT).show();
     }
 }

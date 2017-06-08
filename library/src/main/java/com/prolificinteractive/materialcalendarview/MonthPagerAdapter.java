@@ -3,8 +3,6 @@ package com.prolificinteractive.materialcalendarview;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 
-import java.util.List;
-
 /**
  * Pager adapter backing the calendar view
  */
@@ -82,8 +80,8 @@ class MonthPagerAdapter extends CalendarPagerAdapter<MonthView> {
         }
 
         @Override
-        public List<CalendarDay> getVisibleWeekDays(int position) {
-            return null;
+        public WeekDayRange getVisibleWeekDays(int position) {
+            return new WeekDayRange();
         }
 
         @Override

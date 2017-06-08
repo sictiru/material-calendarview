@@ -295,7 +295,7 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
         return rangeIndex.getItem(position);
     }
 
-    List<CalendarDay> getVisibleWeekDays(int position) {
+    WeekDayRange getVisibleWeekDays(int position) {
         return rangeIndex.getVisibleWeekDays(position);
     }
 

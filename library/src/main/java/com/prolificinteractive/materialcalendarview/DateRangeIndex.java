@@ -1,7 +1,5 @@
 package com.prolificinteractive.materialcalendarview;
 
-import java.util.List;
-
 /**
  * Use math to calculate first days of months by postion from a minium date
  */
@@ -13,7 +11,7 @@ interface DateRangeIndex {
 
     CalendarDay getItem(int position);
 
-    List<CalendarDay> getVisibleWeekDays(int position);
+    WeekDayRange getVisibleWeekDays(int position);
 
     CalendarDay getWeekMaxDate(int position);
 }

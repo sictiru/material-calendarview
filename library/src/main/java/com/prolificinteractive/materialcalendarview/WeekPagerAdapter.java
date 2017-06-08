@@ -2,10 +2,8 @@ package com.prolificinteractive.materialcalendarview;
 
 import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Experimental
@@ -66,17 +64,15 @@ public class WeekPagerAdapter extends CalendarPagerAdapter<WeekView> {
         }
 
         @Override
-        public List<CalendarDay> getVisibleWeekDays(int position) {
-            List<CalendarDay> list = new ArrayList<>();
+        public WeekDayRange getVisibleWeekDays(int position) {
+            WeekDayRange weekDayRange = new WeekDayRange();
             long minMillis = min.getDate().getTime();
             long millisOffset = TimeUnit.MILLISECONDS.convert(position * DAYS_IN_WEEK, TimeUnit.DAYS);
             long currentMillis = minMillis + millisOffset;
-
-            for (int i = 0; i < DAYS_IN_WEEK; i++) {
-                long nextDayOffset = TimeUnit.MILLISECONDS.convert(i, TimeUnit.DAYS);
-                list.add(CalendarDay.from(new Date(nextDayOffset + currentMillis)));
-            }
-            return list;
+            long lastDayOffset = TimeUnit.MILLISECONDS.convert(6, TimeUnit.DAYS);
+            weekDayRange.startDate = CalendarDay.from(new Date(currentMillis)).toString();
+            weekDayRange.endDate = CalendarDay.from(new Date(lastDayOffset + currentMillis)).toString();
+            return weekDayRange;
         }
 
         @Override
