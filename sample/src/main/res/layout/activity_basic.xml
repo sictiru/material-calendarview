@@ -16,8 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:mcv_calendarMode="week"
-        app:mcv_tileHeight="64dp"
-        app:mcv_firstDayOfWeek="monday" />
+        app:mcv_firstDayOfWeek="monday"
+        app:mcv_showOtherDates="out_of_range"
+        app:mcv_tileHeight="68dp" />
 
     <TextView
         android:id="@+id/textView"

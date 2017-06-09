@@ -1,6 +1,7 @@
 package com.prolificinteractive.materialcalendarview.sample2;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -45,18 +46,14 @@ public class BasicActivity extends AppCompatActivity implements OnDateSelectedLi
         widget.setOnDateChangedListener(this);
         widget.setOnMonthChangedListener(this);
         widget.setOnWeekChangedListener(this);
-        widget.setDynamicHeightEnabled(true);
         widget.setCurrentDate(CalendarDay.from(Calendar.getInstance()));
+        widget.state().edit().setMinimumDate(CalendarDay.from(Calendar.getInstance())).commit();
 
         //Setup initial text
         textView.setText(getSelectedDatesString());
 
         CalendarDay test = CalendarDay.from(Calendar.getInstance());
         widget.setSelectedDate(test);
-
-        Toast.makeText(this, widget.getInitStartDate() + "", Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, widget.getInitEndDate() + "", Toast.LENGTH_SHORT).show();
-
 
     }
 
