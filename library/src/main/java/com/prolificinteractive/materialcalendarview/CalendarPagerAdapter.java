@@ -20,9 +20,8 @@ import java.util.List;
  */
 abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAdapter {
 
+    final MaterialCalendarView mcv;
     private final ArrayDeque<V> currentViews;
-
-    protected final MaterialCalendarView mcv;
     private final CalendarDay today;
 
     private TitleFormatter titleFormatter = null;
@@ -49,12 +48,12 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
         setRangeDates(null, null);
     }
 
-    public void setDecorators(List<DayViewDecorator> decorators) {
+    void setDecorators(List<DayViewDecorator> decorators) {
         this.decorators = decorators;
         invalidateDecorators();
     }
 
-    public void invalidateDecorators() {
+    void invalidateDecorators() {
         decoratorResults = new ArrayList<>();
         for (DayViewDecorator decorator : decorators) {
             DayViewFacade facade = new DayViewFacade();
@@ -78,7 +77,7 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
         return titleFormatter == null ? "" : titleFormatter.format(getItem(position));
     }
 
-    public CalendarPagerAdapter<?> migrateStateAndReturn(CalendarPagerAdapter<?> newAdapter) {
+    CalendarPagerAdapter<?> migrateStateAndReturn(CalendarPagerAdapter<?> newAdapter) {
         newAdapter.titleFormatter = titleFormatter;
         newAdapter.color = color;
         newAdapter.dateTextAppearance = dateTextAppearance;
@@ -95,7 +94,7 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
         return newAdapter;
     }
 
-    public int getIndexForDay(CalendarDay day) {
+    int getIndexForDay(CalendarDay day) {
         if (day == null) {
             return getCount() / 2;
         }
@@ -164,7 +163,7 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
         return pagerView;
     }
 
-    public void setSelectionEnabled(boolean enabled) {
+    void setSelectionEnabled(boolean enabled) {
         selectionEnabled = enabled;
         for (V pagerView : currentViews) {
             pagerView.setSelectionEnabled(selectionEnabled);
@@ -183,42 +182,25 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
         return view == object;
     }
 
-    public void setTitleFormatter(@NonNull TitleFormatter titleFormatter) {
+    void setTitleFormatter(@NonNull TitleFormatter titleFormatter) {
         this.titleFormatter = titleFormatter;
     }
 
-    public void setSelectionColor(int color) {
+    void setSelectionColor(int color) {
         this.color = color;
         for (V pagerView : currentViews) {
             pagerView.setSelectionColor(color);
         }
     }
 
-    public void setDateTextAppearance(int taId) {
-        if (taId == 0) {
-            return;
-        }
-        this.dateTextAppearance = taId;
-        for (V pagerView : currentViews) {
-            pagerView.setDateTextAppearance(taId);
-        }
-    }
-
-    public void setShowOtherDates(@ShowOtherDates int showFlags) {
-        this.showOtherDates = showFlags;
-        for (V pagerView : currentViews) {
-            pagerView.setShowOtherDates(showFlags);
-        }
-    }
-
-    public void setWeekDayFormatter(WeekDayFormatter formatter) {
+    void setWeekDayFormatter(WeekDayFormatter formatter) {
         this.weekDayFormatter = formatter;
         for (V pagerView : currentViews) {
             pagerView.setWeekDayFormatter(formatter);
         }
     }
 
-    public void setDayFormatter(DayFormatter formatter) {
+    void setDayFormatter(DayFormatter formatter) {
         this.dayFormatter = formatter;
         for (V pagerView : currentViews) {
             pagerView.setDayFormatter(formatter);
@@ -226,21 +208,18 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
     }
 
     @ShowOtherDates
-    public int getShowOtherDates() {
+    int getShowOtherDates() {
         return showOtherDates;
     }
 
-    public void setWeekDayTextAppearance(int taId) {
-        if (taId == 0) {
-            return;
-        }
-        this.weekDayTextAppearance = taId;
+    void setShowOtherDates(@ShowOtherDates int showFlags) {
+        this.showOtherDates = showFlags;
         for (V pagerView : currentViews) {
-            pagerView.setWeekDayTextAppearance(taId);
+            pagerView.setShowOtherDates(showFlags);
         }
     }
 
-    public void setRangeDates(CalendarDay min, CalendarDay max) {
+    void setRangeDates(CalendarDay min, CalendarDay max) {
         this.minDate = min;
         this.maxDate = max;
         for (V pagerView : currentViews) {
@@ -262,16 +241,16 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
         invalidateSelectedDates();
     }
 
-    public DateRangeIndex getRangeIndex() {
+    DateRangeIndex getRangeIndex() {
         return rangeIndex;
     }
 
-    public void clearSelections() {
+    void clearSelections() {
         selectedDates.clear();
         invalidateSelectedDates();
     }
 
-    public void setDateSelected(CalendarDay day, boolean selected) {
+    void setDateSelected(CalendarDay day, boolean selected) {
         if (selected) {
             if (!selectedDates.contains(day)) {
                 selectedDates.add(day);
@@ -283,6 +262,14 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
                 invalidateSelectedDates();
             }
         }
+    }
+
+    CalendarDay getInitStartDate() {
+        return today;
+    }
+
+    CalendarDay getInitEndDate(int position) {
+        return rangeIndex.getWeekMaxDate(position);
     }
 
     private void invalidateSelectedDates() {
@@ -304,20 +291,50 @@ abstract class CalendarPagerAdapter<V extends CalendarPagerView> extends PagerAd
         }
     }
 
-    public CalendarDay getItem(int position) {
+    CalendarDay getItem(int position) {
         return rangeIndex.getItem(position);
     }
 
+    WeekDayRange getVisibleWeekDays(int position) {
+        return rangeIndex.getVisibleWeekDays(position);
+    }
+
     @NonNull
-    public List<CalendarDay> getSelectedDates() {
+    List<CalendarDay> getSelectedDates() {
         return Collections.unmodifiableList(selectedDates);
     }
 
-    protected int getDateTextAppearance() {
+    int getDateTextAppearance() {
         return dateTextAppearance == null ? 0 : dateTextAppearance;
     }
 
-    protected int getWeekDayTextAppearance() {
+    void setDateTextAppearance(int taId) {
+        if (taId == 0) {
+            return;
+        }
+        this.dateTextAppearance = taId;
+        for (V pagerView : currentViews) {
+            pagerView.setDateTextAppearance(taId);
+        }
+    }
+
+    int getWeekDayTextAppearance() {
         return weekDayTextAppearance == null ? 0 : weekDayTextAppearance;
+    }
+
+    void setWeekDayTextAppearance(int taId) {
+        if (taId == 0) {
+            return;
+        }
+        this.weekDayTextAppearance = taId;
+        for (V pagerView : currentViews) {
+            pagerView.setWeekDayTextAppearance(taId);
+        }
+    }
+
+    void setDaysExtra(List<CalendarDay> customDays) {
+        for (V pagerView : currentViews) {
+            pagerView.setDaysExtra(customDays);
+        }
     }
 }

@@ -58,11 +58,30 @@ public class WeekPagerAdapter extends CalendarPagerAdapter<WeekView> {
         @Override
         public CalendarDay getItem(int position) {
             long minMillis = min.getDate().getTime();
-            long millisOffset = TimeUnit.MILLISECONDS.convert(
-                    position * DAYS_IN_WEEK,
-                    TimeUnit.DAYS);
+            long millisOffset = TimeUnit.MILLISECONDS.convert(position * DAYS_IN_WEEK, TimeUnit.DAYS);
             long positionMillis = minMillis + millisOffset;
             return CalendarDay.from(new Date(positionMillis));
+        }
+
+        @Override
+        public WeekDayRange getVisibleWeekDays(int position) {
+            WeekDayRange weekDayRange = new WeekDayRange();
+            long minMillis = min.getDate().getTime();
+            long millisOffset = TimeUnit.MILLISECONDS.convert(position * DAYS_IN_WEEK, TimeUnit.DAYS);
+            long currentMillis = minMillis + millisOffset;
+            long lastDayOffset = TimeUnit.MILLISECONDS.convert(6, TimeUnit.DAYS);
+            weekDayRange.startDate = CalendarDay.from(new Date(currentMillis)).toString();
+            weekDayRange.endDate = CalendarDay.from(new Date(lastDayOffset + currentMillis)).toString();
+            return weekDayRange;
+        }
+
+        @Override
+        public CalendarDay getWeekMaxDate(int position) {
+            long minMillis = min.getDate().getTime();
+            long millisOffset = TimeUnit.MILLISECONDS.convert(position * DAYS_IN_WEEK, TimeUnit.DAYS);
+            long currentMillis = minMillis + millisOffset;
+            long nextDayOffset = TimeUnit.MILLISECONDS.convert(6, TimeUnit.DAYS);
+            return CalendarDay.from(new Date(nextDayOffset + currentMillis));
         }
 
         private int weekNumberDifference(@NonNull CalendarDay min, @NonNull CalendarDay max) {
